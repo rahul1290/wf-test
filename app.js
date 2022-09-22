@@ -12,25 +12,25 @@ const fun1 = (callback) =>{
 
 const fun2 = (payload,callback) =>{
     console.log("fun2 called");
-    return callback(payload)
+    return callback(null,payload)
 }
 
-const fun3 = (payload,callback) =>{
+const fun3 = (payload,callback,cb) =>{
     console.log("fun3 called");
-    return payload
+    return cb(null,payload)
 }
 
 const fun4 = (payload,callback) =>{
     console.log("fun4 called");
     console.log(payload);
-    return null
+    return callback(null,payload)
 }
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-const cond = 3;
+const cond = 2;
 
 async.waterfall([
     async.apply(fun1),
@@ -39,13 +39,15 @@ async.waterfall([
             async.waterfall([
                 async.apply(fun3,payload,callback),
                 fun4
-            ],callback)
+            ])
         } else{
             async.waterfall([
                 async.apply(fun2,payload,callback),
-            ],callback)
+            ])
         }
     },
+    // fun4,
+    // fun2
 ],(error) => {
-    console.log('error:',error)
+    console.log('error--:',error)
 })
